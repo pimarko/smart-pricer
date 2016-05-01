@@ -30,22 +30,22 @@ elif(SEAT_LOAD_FACTOR_PER_WEEK_MOVIE_ROW):
 	row_capacity = read_row_capacity()
 	tickets_sold = read_tickets_sold()
 
-	df = pd.merge(tickets_sold,row_capacity,on = ['auditorium_row'])
  	#set as_index = False to get DataFrame object(otherwise Series Object)
-	df_ticket_count = df.groupby(['calendarweek', 'movie', 'auditorium_row'], as_index = False)['ticket_id'].count()
+	df_ticket_count = tickets_sold.groupby(['calendarweek', 'movie', 'auditorium_row'], as_index = False)['ticket_id'].count()
 	df_ticket_count_max_seats_count = pd.merge(df_ticket_count,row_capacity,on = 'auditorium_row')
 	df_final = df_ticket_count_max_seats_count['ticket_id'].div(df_ticket_count_max_seats_count['max_seats_per_row'])
 	df_final.name = ''
 	df_result = pd.concat([df_ticket_count_max_seats_count['calendarweek'],df_ticket_count_max_seats_count['movie'],df_ticket_count_max_seats_count['auditorium_row'],df_final], axis = 1)
 
-	print df_result
+	print df_result.to_string(index=False)
+
+
 
 elif(SEAT_LOAD_FACTOR_PER_WEEK_ROW):
 	row_capacity = read_row_capacity()
 	tickets_sold = read_tickets_sold()
 
-	df = pd.merge(tickets_sold,row_capacity,on = ['auditorium_row'])
-	df_ticket_count = df.groupby(['calendarweek', 'show_id', 'auditorium_row'], as_index = False)['ticket_id'].count()
+	df_ticket_count = tickets_sold.groupby(['calendarweek', 'show_id', 'auditorium_row'], as_index = False)['ticket_id'].count()
 	df_ticket_count_max_seats_count = pd.merge(df_ticket_count,row_capacity,on = 'auditorium_row')
 	df_load_factor = df_ticket_count_max_seats_count['ticket_id'].div(df_ticket_count_max_seats_count['max_seats_per_row'])
 	df_load_factor.name = 'load_factor_per_week_show_id_row'
@@ -56,7 +56,7 @@ elif(SEAT_LOAD_FACTOR_PER_WEEK_ROW):
 	df_final.name = ''
 	df_result = pd.concat([df_count_same_row['calendarweek'], df_count_same_row['auditorium_row'], df_final], axis = 1)
 
-	print df_result
+	print df_result.to_string(index=False)
 
 else:
 	print "Terminating..."
